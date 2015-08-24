@@ -12,6 +12,7 @@ static PyMethodDef SegfaultMethods[] = {
     {NULL, NULL, 0, NULL}
 };
 
+#if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef segfaultmodule = {
     PyModuleDef_HEAD_INIT,
     "segfault",
@@ -20,8 +21,19 @@ static struct PyModuleDef segfaultmodule = {
     SegfaultMethods
 };
 
-PyMODINIT_FUNC
-PyInit_segfault(void)
+PyObject * PyInit_segfault(void)
+
+#else
+
+void initsegfault(void)
+#endif
 {
-    return PyModule_Create(&segfaultmodule);
+#if PY_MAJOR_VERSION >= 3
+    PyObject *module = PyModule_Create(&segfaultmodule);
+#else
+    Py_InitModule("segfault", SegfaultMethods);
+#endif
+#if PY_MAJOR_VERSION >= 3
+    return module;
+#endif
 }
